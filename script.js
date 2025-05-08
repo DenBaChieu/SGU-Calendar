@@ -40,6 +40,8 @@ function addEvent() {
         end: eventEnd
     };
 
+    console.log("Event Data Being Sent:", eventData);
+
     fetch(webLink + "/add-event", {
         method: "POST",
         headers: {
@@ -48,12 +50,18 @@ function addEvent() {
         },
         body: JSON.stringify(eventData)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
-        console.log(data);
+        console.log("Event added successfully:", data);
         alert("Event added successfully: " + data.event_link);
     })
-    .catch(error => console.error("Error:", error));
+    .catch(error => console.error("Error Adding Event:", error));
+    
 }
 
 window.onload = getTokenFromURL;
