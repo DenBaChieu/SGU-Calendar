@@ -1,3 +1,10 @@
+let webLink = "https://sgu-calendar.onrender.com";
+
+function login() {
+    window.location.href = webLink + "/login";
+}
+
+
 function addEvent() {
     let eventTitle = document.getElementById("eventTitle").value;
     let eventStart = document.getElementById("eventStart").value;
@@ -15,7 +22,7 @@ function addEvent() {
         end: eventEnd
     };
 
-    fetch("https://your-backend.onrender.com/add-event", {
+    fetch(webLink + "/add-event", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
