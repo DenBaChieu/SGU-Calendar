@@ -4,6 +4,18 @@ function login() {
     window.location.href = webLink + "/login";
 }
 
+function checkLoginStatus() {
+    fetch(webLink + "/check-login")
+        .then(response => response.json())
+        .then(data => {
+            if (data.token) {
+                localStorage.setItem("oauth_token", data.token);
+            } else {
+                alert("Please login first!");
+            }
+        });
+}
+
 
 function addEvent() {
     let eventTitle = document.getElementById("eventTitle").value;
