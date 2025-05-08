@@ -5,17 +5,23 @@ function login() {
 }
 
 function checkLoginStatus() {
-    fetch(webLink + "/check-login")
-        .then(response => response.json())
-        .then(data => {
-            if (data.token) {
-                localStorage.setItem("oauth_token", data.token);
-            } else {
-                alert("Please login first!");
-            }
-        });
+    let storedToken = localStorage.getItem("oauth_token");
+
+    if (!storedToken) {
+        alert("Please log in first!");
+        window.location.href = "https://calendar.onrender.com/login";
+    }
 }
 
+
+function getTokenFromURL() {
+    let params = new URLSearchParams(window.location.search);
+    let token = params.get("token");
+
+    if (token) {
+        localStorage.setItem("oauth_token", token);
+    }
+}
 
 function addEvent() {
     let eventTitle = document.getElementById("eventTitle").value;
@@ -49,3 +55,5 @@ function addEvent() {
     })
     .catch(error => console.error("Error:", error));
 }
+
+window.onload = getTokenFromURL;
