@@ -39,6 +39,7 @@ function extractData(input) {
 function addEventToGoogle(
     summary, location, desc, startTime, endTime, rule, colorId
 ) {
+    let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
     let eventData = {
         summary: summary,
         location: location,
