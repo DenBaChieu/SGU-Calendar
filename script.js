@@ -76,7 +76,8 @@ function addEventToGoogle(
             "Content-Type": "application/json",
             "Authorization": `Bearer ${storedToken}`
         },
-        body: JSON.stringify({event:eventData})
+        body: JSON.stringify({event:eventData}),
+        mode: "cors"  // Enable cross-origin requests
     })
     .then(response => {
         if (!response.ok) {
