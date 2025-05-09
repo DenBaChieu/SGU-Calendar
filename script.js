@@ -51,6 +51,7 @@ async function addEventToGoogle(
     summary, place, desc, start, end, rule, colorId
 ) {
     let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
+    const calendarId = localStorage.getItem("calendarId");
     eventData = {
         "summary": summary,
         "location": place,
@@ -72,7 +73,7 @@ async function addEventToGoogle(
 
     console.log("Event Data Being Sent:", eventData);
 
-    const response = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
+    const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${storedToken}`,
@@ -145,6 +146,31 @@ function addEvent() {
         login();
         return;
     }
+
+    let name
+    let i = input.search(/\sHọc kỳ [0-9]+\s/);
+    if (i != -1) {
+        name = input.slice(i + 1, i + 10).trim();
+    }
+
+    //Create new calendar
+    fetch("https://www.googleapis.com/calendar/v3/calendars", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${storedToken}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            summary: name,
+            timeZone: "Asia/Ho_Chi_Minh"
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("New calendar created!", data);
+        localStorage.setItem("calendarId", data.id); // Store calendar ID for later use
+    });
+    
     
     let i = input.search(/\s[0-9]{6}\s/);
     if (i != -1) {
@@ -168,7 +194,7 @@ function addEvent() {
         let [daya, montha, yeara] = getDate(range);
         let [dayb, monthb, yearb] = getDate(range.slice(10));
         let startDate = "20" + yeara + "-" + montha + "-" + daya + "T" + startTime[Number(start) - 1] + ":00";
-        let endDate = "20" + yearb + "-" + monthb + "-" + dayb + "T" + endTime[Number(start) + Number(time) - 2] + ":00";
+        let endDate = "20" + yeara + "-" + montha + "-" + daya + "T" + endTime[Number(start) + Number(time) - 2] + ":00";
         addEventToGoogle(
             summary = name,
             place = room,
@@ -190,7 +216,7 @@ function addEvent() {
             [daya, montha, yeara] = getDate(range);
             [dayb, monthb, yearb] = getDate(range.slice(10));
             startDate = "20" + yeara + "-" + montha + "-" + daya + "T" + startTime[Number(start) - 1] + ":00";
-            endDate = "20" + yearb + "-" + monthb + "-" + dayb + "T" + endTime[Number(start) + Number(time) - 2] + ":00";
+            endDate = "20" + yeara + "-" + montha + "-" + daya + "T" + endTime[Number(start) + Number(time) - 2] + ":00";
             addEventToGoogle(
                 summary = name,
                 place = room,
