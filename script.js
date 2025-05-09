@@ -40,15 +40,6 @@ function addEventToGoogle(
     summary, place, desc, start, end, rule, colorId
 ) {
     let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
-    /*let eventData = {
-        summary: summary,
-        location: location,
-        description: desc,
-        startTime: startTime,
-        endTime: endTime,
-        rule: rule,
-        colorId: colorId,
-    };*/
     eventData = {
         "summary": summary,
         "location": place,
@@ -85,7 +76,7 @@ function addEventToGoogle(
         return response.json();
     })
     .then(data => {
-        console.log("Event added successfully: ", data);
+        console.log("Event added successfully:", data);
         alert("Event added successfully");
     })
     .catch(error => {
