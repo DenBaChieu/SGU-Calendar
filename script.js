@@ -85,6 +85,10 @@ function addEventToGoogle(
         return response.json();
     })
     .then(data => {
+        if (data.get("message") == "Login again") {
+            login();
+            return;
+        }
         console.log("Event added successfully: ", data);
         alert("Event added successfully");
     })
