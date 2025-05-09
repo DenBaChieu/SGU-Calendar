@@ -121,7 +121,7 @@ function addEvent() {
         let group = infos[2].trim();
         let credit = infos[3].trim();
         let classCode = infos[4].trim();
-        let color = stringify(Math.floor(Math.random() * 11) + 1);
+        let color = (Math.floor(Math.random() * 11) + 1).toString();
         /*console.log("Mã MH: " + code);
         console.log("Tên: " + name);
         console.log("Nhóm: " + group);
