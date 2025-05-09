@@ -172,7 +172,7 @@ function addEvent() {
     });
     
     
-    let i = input.search(/\s[0-9]{6}\s/);
+    i = input.search(/\s[0-9]{6}\s/);
     if (i != -1) {
         input = input.slice(i);
     }
