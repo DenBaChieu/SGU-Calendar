@@ -37,7 +37,7 @@ function extractData(input) {
 }
 
 function addEventToGoogle(
-    summary, location, desc, startTime, endTime, rule, colorId
+    summary, place, desc, startTime, endTime, rule, colorId
 ) {
     let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
     /*let eventData = {
@@ -51,7 +51,7 @@ function addEventToGoogle(
     };*/
     eventData = {
         "summary": summary,
-        "location": location,
+        "location": place,
         "description": desc,
         "start": {  
             "dateTime": startTime,
@@ -154,7 +154,7 @@ function addEvent() {
         let endDate = "20" + yearb + "-" + monthb + "-" + dayb + "T" + endTime[Number(start) + Number(time) - 2] + ":00";
         addEventToGoogle(
             summary = name,
-            location = room,
+            place = room,
             desc = getDesc(code,group,credit,classCode,room,teacher),
             startTime = startDate,
             endTime = endDate,
@@ -176,7 +176,7 @@ function addEvent() {
             let endDate = "20" + yearb + "-" + monthb + "-" + dayb + "T" + endTime[Number(start) + Number(time) - 2] + ":00";
             addEventToGoogle(
                 summary = name,
-                location = room,
+                place = room,
                 desc = getDesc(code,group,credit,classCode,room,teacher),
                 startTime = startDate,
                 endTime = endDate,
