@@ -40,7 +40,7 @@ function addEventToGoogle(
     summary, location, desc, startTime, endTime, rule, colorId
 ) {
     let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
-    let eventData = {
+    /*let eventData = {
         summary: summary,
         location: location,
         description: desc,
@@ -48,7 +48,25 @@ function addEventToGoogle(
         endTime: endTime,
         rule: rule,
         colorId: colorId,
-    };
+    };*/
+    eventData = {
+        "summary": summary,
+        "location": location,
+        "description": desc,
+        "start": {  
+            "dateTime": startTime,
+            "timeZone": "Asia/Ho_Chi_Minh"
+        },
+        "end": {
+            "dateTime": endTime,
+            "timeZone": "Asia/Ho_Chi_Minh"
+        },
+        "recurrence": [rule],
+        "reminders": {
+            "useDefault": True,
+        },
+        "colorId": colorId
+    }
 
     console.log("Event Data Being Sent:", eventData);
 
@@ -58,7 +76,7 @@ function addEventToGoogle(
             "Content-Type": "application/json",
             "Authorization": `Bearer ${storedToken}`
         },
-        body: JSON.stringify(eventData)
+        body: JSON.stringify({event:eventData})
     })
     .then(response => {
         if (!response.ok) {
@@ -130,7 +148,6 @@ function addEvent() {
         console.log("Lớp: " + classCode);*/
 
         let [day,start,time,room,teacher,range] = extractData(infos.slice(5));
-        //console.log(getDesc(code,group,credit,classCode,room,teacher));
         let [daya, montha, yeara] = getDate(range);
         let [dayb, monthb, yearb] = getDate(range.slice(10));
         let startDate = "20" + yeara + "-" + montha + "-" + daya + "T" + startTime[Number(start) - 1] + ":00";
@@ -151,7 +168,8 @@ function addEvent() {
         input = input.slice(j + 21);
         j = input.search(/\s[0-9]\s/);
         while (j >= 0 && j <= 3) {
-            let [day,start,time,room,teacher,range] = extractData(infos.slice(5));
+            infos = input.split("\t");
+            let [day,start,time,room,teacher,range] = extractData(infos);
             let [daya, montha, yeara] = getDate(range);
             let [dayb, monthb, yearb] = getDate(range.slice(10));
             let startDate = "20" + yeara + "-" + montha + "-" + daya + "T" + startTime[Number(start) - 1] + ":00";
