@@ -63,7 +63,7 @@ function addEventToGoogle(
         },
         "recurrence": [rule],
         "reminders": {
-            "useDefault": True,
+            "useDefault": true,
         },
         "colorId": colorId
     }
