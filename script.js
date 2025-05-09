@@ -37,7 +37,7 @@ function extractData(input) {
 }
 
 function addEventToGoogle(
-    summary, place, desc, startTime, endTime, rule, colorId
+    summary, place, desc, start, end, rule, colorId
 ) {
     let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
     /*let eventData = {
@@ -54,11 +54,11 @@ function addEventToGoogle(
         "location": place,
         "description": desc,
         "start": {  
-            "dateTime": startTime,
+            "dateTime": start,
             "timeZone": "Asia/Ho_Chi_Minh"
         },
         "end": {
-            "dateTime": endTime,
+            "dateTime": end,
             "timeZone": "Asia/Ho_Chi_Minh"
         },
         "recurrence": [rule],
@@ -123,11 +123,11 @@ function addEvent() {
         return;
     }
 
-    if (!storedToken) {
+    /*if (!storedToken) {
         alert("Please log in first!");
         login();
         return;
-    }
+    }*/
     
     let i = input.search(/\s[0-9]{6}\s/);
     if (i != -1) {
@@ -156,8 +156,8 @@ function addEvent() {
             summary = name,
             place = room,
             desc = getDesc(code,group,credit,classCode,room,teacher),
-            startTime = startDate,
-            endTime = endDate,
+            start = startDate,
+            end = endDate,
             rule = "RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=" + 
             dayOfWeek[Number(day) - 2] + 
             ";UNTIL=20" + yearb + monthb + dayb + "T235959Z",
@@ -169,17 +169,17 @@ function addEvent() {
         j = input.search(/\s[0-9]\s/);
         while (j >= 0 && j <= 3) {
             infos = input.split("\t");
-            let [day,start,time,room,teacher,range] = extractData(infos);
-            let [daya, montha, yeara] = getDate(range);
-            let [dayb, monthb, yearb] = getDate(range.slice(10));
-            let startDate = "20" + yeara + "-" + montha + "-" + daya + "T" + startTime[Number(start) - 1] + ":00";
-            let endDate = "20" + yearb + "-" + monthb + "-" + dayb + "T" + endTime[Number(start) + Number(time) - 2] + ":00";
+            [day,start,time,room,teacher,range] = extractData(infos);
+            [daya, montha, yeara] = getDate(range);
+            [dayb, monthb, yearb] = getDate(range.slice(10));
+            startDate = "20" + yeara + "-" + montha + "-" + daya + "T" + startTime[Number(start) - 1] + ":00";
+            endDate = "20" + yearb + "-" + monthb + "-" + dayb + "T" + endTime[Number(start) + Number(time) - 2] + ":00";
             addEventToGoogle(
                 summary = name,
                 place = room,
                 desc = getDesc(code,group,credit,classCode,room,teacher),
-                startTime = startDate,
-                endTime = endDate,
+                start = startDate,
+                end = endDate,
                 rule = "RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=" + 
                 dayOfWeek[Number(day) - 2] + 
                 ";UNTIL=20" + yearb + monthb + dayb + "T235959Z",
