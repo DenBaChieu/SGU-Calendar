@@ -126,7 +126,7 @@ function getDate(input) {
     return [day, month, year];
 }
 
-function addEvent() {
+async function addEvent() {
     let input = document.getElementById("input").value;
     let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
 
@@ -148,7 +148,7 @@ function addEvent() {
     }
 
     //Create new calendar
-    fetch("https://www.googleapis.com/calendar/v3/calendars", {
+    const response = await fetch("https://www.googleapis.com/calendar/v3/calendars", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${storedToken}`,
@@ -159,11 +159,17 @@ function addEvent() {
             timeZone: "Asia/Ho_Chi_Minh"
         })
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log("New calendar created!", data);
-        localStorage.setItem("calendarId", data.id); // Store calendar ID for later use
-    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+        console.log("Calendar created successfully!", data);
+        localStorage.setItem("calendarId", data.id);
+    } else {
+        console.error("Error creating calendar:", data);
+        alert("Failed to create calendar. Check authentication or permissions.");
+        return;
+    }
     
     
     i = input.search(/\s[0-9]{6}\s/);
