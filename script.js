@@ -11,16 +11,27 @@ let dayOfWeek = [
     "MO", "TU", "WE", "TH", "FR", "SA", "SU"
 ]
 
+const CLIENT_ID = "257937309503-8102k6ntknn262kme876mb0r9l5lafka.apps.googleusercontent.com";
+const REDIRECT_URI = "https://denbachieu.github.io/SGU-Calendar-Frontend";
+const SCOPE = "https://www.googleapis.com/auth/calendar.events";
+const AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=${SCOPE}`;
+
 function login() {
-    window.location.href = webLink + "/login";
+    window.location.href = AUTH_URL;
+}
+
+function getAccessToken() {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    return hashParams.get("oauth_token") || hashParams.get("access_token");
 }
 
 function getTokenFromURL() {
-    let params = new URLSearchParams(window.location.search);
-    let token = params.get("token");
-
-    if (token) {
-        localStorage.setItem("oauth_token", token);
+    const accessToken = getAccessToken();
+    if (accessToken) {
+        localStorage.setItem("oauth_token", accessToken);
+        alert("Authentication successful! Token stored.");
+    } else {
+        alert("Failed to retrieve access token.");
     }
 }
 
@@ -36,7 +47,7 @@ function extractData(input) {
     return [day,start,time,room,teacher,range];
 }
 
-function addEventToGoogle(
+async function addEventToGoogle(
     summary, place, desc, start, end, rule, colorId
 ) {
     let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
@@ -61,7 +72,22 @@ function addEventToGoogle(
 
     console.log("Event Data Being Sent:", eventData);
 
-    fetch(webLink + "/add-event", {
+    const response = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${storedToken}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(eventData)
+    });
+
+    if (response.ok) {
+        alert("Event added successfully!");
+    } else {
+        alert("Failed to add event. Please check authentication.");
+    }
+
+    /*fetch(webLink + "/add-event", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -82,7 +108,7 @@ function addEventToGoogle(
     .catch(error => {
         console.error("Error Adding Event:", error)
         alert("Event failed to be added");
-    });
+    });*/
 }
 
 function getDesc(code,group,credit,classCode,room,teacher) {
@@ -114,11 +140,11 @@ function addEvent() {
         return;
     }
 
-    /*if (!storedToken) {
+    if (!storedToken) {
         alert("Please log in first!");
         login();
         return;
-    }*/
+    }
     
     let i = input.search(/\s[0-9]{6}\s/);
     if (i != -1) {
