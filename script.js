@@ -13,25 +13,19 @@ let dayOfWeek = [
 
 const CLIENT_ID = "257937309503-8102k6ntknn262kme876mb0r9l5lafka.apps.googleusercontent.com";
 const REDIRECT_URI = "https://denbachieu.github.io/SGU-Calendar-Frontend";
-const SCOPE = "https://www.googleapis.com/auth/calendar.events";
+const SCOPE = "https://www.googleapis.com/auth/calendar";
 const AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=${SCOPE}`;
 
 function login() {
     window.location.href = AUTH_URL;
 }
 
-function getAccessToken() {
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    return hashParams.get("oauth_token") || hashParams.get("access_token");
-}
-
 function getTokenFromURL() {
-    const accessToken = getAccessToken();
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get("oauth_token") || hashParams.get("access_token");
     if (accessToken) {
         localStorage.setItem("oauth_token", accessToken);
         alert("Authentication successful! Token stored.");
-    } else {
-        alert("Failed to retrieve access token.");
     }
 }
 
