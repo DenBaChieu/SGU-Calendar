@@ -43,7 +43,7 @@ function extractData(input) {
 async function addEventToGoogle(
     summary, place, desc, start, end, rule, colorId
 ) {
-    let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
+    let storedToken = localStorage.getItem("oauth_token");
     const calendarId = localStorage.getItem("calendarId");
     eventData = {
         "summary": summary,
@@ -106,10 +106,13 @@ function getDate(input) {
 }
 
 async function addEvent(logged = false) {
-    let input = document.getElementById("input").value;
+    let inputer = document.getElementById("input");
+    let input = inputer.value;
     let button = document.getElementById("add-button");
     button.textContent = "Adding...";
     button.disabled = true;
+
+    let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
 
     if (!logged) {
         localStorage.setItem("input", input);
@@ -119,6 +122,7 @@ async function addEvent(logged = false) {
     else if (input != null || input == "") {
         //Get the saved input if there is no input in the text area
         input = localStorage.getItem("input");
+        inputer.value = input;
     }
 
     if (input == null || input.indexOf("THỜI KHÓA BIỂU DẠNG HỌC KỲ") == -1) {
@@ -219,13 +223,14 @@ async function addEvent(logged = false) {
     }
     button.textContent = "Add to Google Calendar";
     button.disabled = false;
-    console.log("Finished");
+    localStorage.setItem("input", "");
     if (success) {
         alert("Events added to calendar successfully!");
     }
     else {
         alert("Events failed to be added to calendar!");
     }
+    console.log("Finished");
 }
 
 /*async function addEvent() {
