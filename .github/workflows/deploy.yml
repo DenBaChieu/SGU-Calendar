@@ -1,0 +1,18 @@
+on:
+  push:
+    branches:
+      - main
+
+env:
+  CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  SCOPE: ${{ secrets.SCOPE }}
+  REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Deploy application
+        run: echo "Deploying application..."
