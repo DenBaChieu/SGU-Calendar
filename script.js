@@ -19,11 +19,15 @@ function login() {
     window.location.href = AUTH_URL;
 }
 
+
+let log = false;
 function getTokenFromURL() {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const accessToken = hashParams.get("oauth_token") || hashParams.get("access_token");
     if (accessToken) {
         localStorage.setItem("oauth_token", accessToken);
+        log = true;
+        addEvent();
     }
 }
 
@@ -113,7 +117,10 @@ async function addEvent() {
         return;
     }
 
-    login();
+    if (!log) {
+        login();
+        return;
+    }
 
     let name = "SGU Calendar";
     let match = input.match(/\s(Học kỳ [0-9]+)\s/);
