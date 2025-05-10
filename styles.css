@@ -19,6 +19,8 @@ h2 {
 }
 
 p {
+    font-size: 20px;
+    line-height: 150%;
     margin-block-start: 0px;
     margin-top: 0px;
     margin-bottom: 0px;
@@ -26,6 +28,8 @@ p {
 }
 
 ol {
+    font-size: 18px;
+    line-height: 110%;
     margin-block-start: 0px;
     margin-top: 0px;
     margin-bottom: 0px;
@@ -73,6 +77,23 @@ textarea:focus::placeholder {
     transform: translateY(-10px);
 }
 
+body, html {
+    margin: 0;
+    padding: 0;
+}
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 30px;
+    margin: 50px 0px 0px 0px;
+}
+footer a {
+    color: #00ff37;
+    text-decoration: none;
+}
+
+
 .logo {
     height: 100px;
     aspect-ratio: 1/1;
@@ -99,7 +120,7 @@ textarea:focus::placeholder {
 }
 
 .centerText {
-    width: 420px;
+    width: 500px;
     margin: auto;
     text-align: left;
 
