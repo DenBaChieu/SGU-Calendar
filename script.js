@@ -20,13 +20,13 @@ function login() {
 }
 
 
-let log = false;
+let logged = false;
 function getTokenFromURL() {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const accessToken = hashParams.get("oauth_token") || hashParams.get("access_token");
     if (accessToken) {
         localStorage.setItem("oauth_token", accessToken);
-        log = true;
+        logged = true;
         addEvent();
     }
 }
@@ -112,13 +112,17 @@ async function addEvent() {
     let input = document.getElementById("input").value;
     let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
 
-    if (input.indexOf("THỜI KHÓA BIỂU DẠNG HỌC KỲ") == -1) {
-        alert("Invalid input format. Please check the input and try again.");
+    if (!logged) {
+        localStorage.setItem("input", input);
+        login();
         return;
     }
+    else {
+        input = localStorage.getItem("input");
+    }
 
-    if (!log) {
-        login();
+    if (input.indexOf("THỜI KHÓA BIỂU DẠNG HỌC KỲ") == -1) {
+        alert("Invalid input format. Please check the input and try again.");
         return;
     }
 
