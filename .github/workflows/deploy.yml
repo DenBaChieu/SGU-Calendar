@@ -14,5 +14,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Deploy application
-        run: echo "Deploying application..."
+      - name: Create config.js
+        run: |
+          echo "export const CLIENT_ID = '${{ secrets.CLIENT_ID }}';" > config.js
+          echo "export const SCOPE = '${{ secrets.SCOPE }}';" >> config.js
+          echo "export const REDIRECT_URI = '${{ secrets.REDIRECT_URI }}';" >> config.js
