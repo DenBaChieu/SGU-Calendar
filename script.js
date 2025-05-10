@@ -19,15 +19,12 @@ function login() {
     window.location.href = AUTH_URL;
 }
 
-
-let logged = false;
 function getTokenFromURL() {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const accessToken = hashParams.get("oauth_token") || hashParams.get("access_token");
-    if (accessToken) {
-        localStorage.setItem("oauth_token", accessToken);
-        logged = true;
-        addEvent();
+    const storedToken = hashParams.get("oauth_token") || hashParams.get("access_token");
+    if (storedToken) {
+        localStorage.setItem("oauth_token", storedToken);
+        addEvent(true);
     }
 }
 
@@ -108,20 +105,20 @@ function getDate(input) {
     }
 }
 
-async function addEvent() {
+async function addEvent(logged = false) {
     let input = document.getElementById("input").value;
     let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
 
-    if (!logged) {
+    if (!storedToken) {
         localStorage.setItem("input", input);
         login();
         return;
     }
-    else if (localStorage.getItem("input") != null) {
+    else if (logged) {
         input = localStorage.getItem("input");
     }
 
-    if (input.indexOf("THỜI KHÓA BIỂU DẠNG HỌC KỲ") == -1) {
+    if (input == null || input.indexOf("THỜI KHÓA BIỂU DẠNG HỌC KỲ") == -1) {
         alert("Invalid input format. Please check the input and try again.");
         return;
     }
