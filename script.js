@@ -117,7 +117,7 @@ async function addEvent() {
         login();
         return;
     }
-    else {
+    else if (localStorage.getItem("input") != null) {
         input = localStorage.getItem("input");
     }
 
