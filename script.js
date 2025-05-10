@@ -118,7 +118,7 @@ async function addEvent(logged = false) {
     button.textContent = "Adding...";
     button.disabled = true;
 
-    let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
+    let storedToken = localStorage.getItem("oauth_token");
 
     if (!logged) {
         localStorage.setItem("input", input);
