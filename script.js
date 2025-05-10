@@ -22,7 +22,7 @@ function getTokenFromURL() {
     const storedToken = hashParams.get("oauth_token") || hashParams.get("access_token");
     if (storedToken) {
         localStorage.setItem("oauth_token", storedToken);
-        addEvent(true);
+        addEvent(logged = true);
     }
 }
 
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", addEvent);
 });
 
-async function addEvent(logged = false) {
+async function addEvent(pointerEvent = null, logged = false) {
     let inputer = document.getElementById("input");
     let input = inputer.value;
     let button = document.getElementById("add-button");
@@ -123,19 +123,22 @@ async function addEvent(logged = false) {
 
     let storedToken = localStorage.getItem("oauth_token");
 
+    console.log("User logged in: ", logged);
+
     if (!logged) {
         localStorage.setItem("input", input);
         login();
         resetButton();
         return;
     }
-    else if (input != null || input == "") {
+    else if (input == null || input == "") {
         //Get the saved input if there is no input in the text area
         input = localStorage.getItem("input");
         inputer.value = input;
     }
 
     if (input == null || input.indexOf("THỜI KHÓA BIỂU DẠNG HỌC KỲ") == -1) {
+        console.error("Invalid input format. Please check the input and try again: ", input);
         alert("Invalid input format. Please check the input and try again.");
         resetButton();
         return;
