@@ -12,7 +12,7 @@ let dayOfWeek = [
 
 const CLIENT_ID = "257937309503-8102k6ntknn262kme876mb0r9l5lafka.apps.googleusercontent.com";
 const REDIRECT_URI = "https://denbachieu.github.io/SGU-Calendar/";
-const SCOPE = "https://www.googleapis.com/auth/calendar";
+const SCOPE = "https://www.googleapis.com/auth/calendar.app.created";
 const AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=${SCOPE}`;
 
 function login() {
