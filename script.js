@@ -125,6 +125,8 @@ async function addEvent(pointerEvent = null, logged = false) {
 
     console.log("User logged in: ", logged);
 
+    console.log(CLIENT_ID, SCOPE, REDIRECT_URI);
+
     if (!logged) {
         localStorage.setItem("input", input);
         login();
