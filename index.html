@@ -1,22 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Event to Google Calendar</title>
+    <link rel="icon" href="flat-icon.ico" type="image/x-icon">
+    <title>SGU Calendar</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Create Event</h1>
-    <p>How to use:</p>
-    <ol>
-        <li>Go to <a href="https://thongtindaotao.daihocsaigon.edu.vn/" target="_blank">SGU website</a></li>
-        <li>Login using your student account</li>
-        <li>Click on "Thời khóa biểu dạng học kì"</li>
-        <li>Press Ctrl + A then Ctrl + C</li>
-        <li>Paste the copied content into the input box below</li>
-    </ol>
-    <input type="text" id="input" placeholder="Paste here">
-    <button onclick="addEvent()">Add to Google Calendar</button>
-    <button onclick="login()">Login</button>
+    <div class="column">
+        <div class="row">
+            <img src="sgu-icon.png" alt="SGU Logo" class="logo">
+            <div>
+                <h1>SGU Calendar</h1>
+                <h2>Automatically converts your SGU timetable into events in Google Calendar</h2>
+            </div>
+            <img src="google-calendar-icon.svg" alt="Google Calendar Logo" class="logo">
+        </div>
+        
+        <div class="centerText"> 
+            <p>How to use:</p>
+            <ol>
+                <li>Go to <a href="https://thongtindaotao.daihocsaigon.edu.vn/" target="_blank">SGU website</a></li>
+                <li>Login using your student account</li>
+                <li>Click on "Thời khóa biểu dạng học kì"</li>
+                <li>Press Ctrl + A then Ctrl + C</li>
+                <li>Paste the copied content into the input box below</li>
+            </ol>
+        </div>
+        
+        <textarea type="text" id="input" placeholder="Paste here"></textarea>
+        <button onclick="addEvent()">Add to Google Calendar</button>
+    </div>
 
-    <script src="script.js"></script> <!-- Load script AFTER elements -->
+    <script src="script.js"></script>
 </body>
 </html>

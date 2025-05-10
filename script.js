@@ -25,7 +25,6 @@ function getTokenFromURL() {
     const accessToken = hashParams.get("oauth_token") || hashParams.get("access_token");
     if (accessToken) {
         localStorage.setItem("oauth_token", accessToken);
-        alert("Authentication successful! Token stored.");
     }
 }
 
@@ -65,8 +64,6 @@ async function addEventToGoogle(
         "colorId": colorId
     }
 
-    console.log("Event Data Being Sent:", eventData);
-
     const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`, {
         method: "POST",
         headers: {
@@ -81,29 +78,6 @@ async function addEventToGoogle(
     } else {
         alert("Failed to add event. Please check authentication.");
     }
-
-    /*fetch(webLink + "/add-event", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${storedToken}`
-        },
-        body: JSON.stringify({event:eventData})
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Event added successfully:", data);
-        alert("Event added successfully");
-    })
-    .catch(error => {
-        console.error("Error Adding Event:", error)
-        alert("Event failed to be added");
-    });*/
 }
 
 function getDesc(code,group,credit,classCode,room,teacher) {
@@ -117,13 +91,18 @@ function getDesc(code,group,credit,classCode,room,teacher) {
 }
 
 function getDate(input) {
-    let pattern = /[0-9]{2}\/[0-9]{2}\/[0-9]{2}/;
-    let a = input.search(pattern);
-    let b = input.slice(a, a + 8).trim();
-    let day = b.slice(0, 2);
-    let month = b.slice(3, 5);
-    let year = b.slice(6, 8);
-    return [day, month, year];
+    let pattern = /([0-9]{2})\/([0-9]{2})\/([0-9]{2}) .+ ([0-9]{2})\/([0-9]{2})\/([0-9]{2})/;
+    let match = input.match(pattern);
+    if (!match) {
+        console.error("Invalid date format:", input);
+        return [0, 0, 0, 0, 0, 0];
+    }
+    else {
+        return [
+            match[1], match[2], match[3],
+            match[4], match[5], match[6]
+        ]
+    }
 }
 
 async function addEvent() {
@@ -136,15 +115,120 @@ async function addEvent() {
     }
 
     if (!storedToken) {
-        alert("Please log in first!");
         login();
+        addEvent();
         return;
     }
 
-    let name
-    let i = input.search(/\sHọc kỳ [0-9]+\s/);
-    if (i != -1) {
-        name = input.slice(i + 1, i + 10).trim();
+    let name = "SGU Calendar";
+    let match = input.match(/\s(Học kỳ [0-9]+)\s/);
+    if (match) {
+        name =  match[1].trim();
+    }
+
+    //Create new calendar
+    const response = await fetch("https://www.googleapis.com/calendar/v3/calendars", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${storedToken}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            summary: name,
+            timeZone: "Asia/Ho_Chi_Minh"
+        })
+    })
+
+    const data = await response.json();
+
+    if (response.ok) {
+        console.log("Calendar created successfully!", data);
+        localStorage.setItem("calendarId", data.id);
+    } else {
+        console.error("Error creating calendar:", data);
+        alert("Failed to create calendar. Check authentication or permissions.");
+        return;
+    }
+
+    let lines = input.split("\n");
+    let i = 0;
+    for (i = 0; i < lines.length; i++) {
+        let j = lines[i].search(/^\s*[0-9]{6}\s/);
+        if (j != -1) {
+            break;
+        }
+    }
+
+    while (i < lines.length && lines[i].search(/^\s*[0-9]{6}\s/) != -1) {
+        let infos = lines[i].split("\t");
+        let code = infos[0].trim();
+        let name = infos[1].trim();
+        let group = infos[2].trim();
+        let credit = infos[3].trim();
+        let classCode = infos[4].trim();
+        let color = (Math.floor(Math.random() * 11) + 1).toString();
+
+        let [day,start,time,room,teacher,range] = extractData(infos.slice(5));
+        let [daya, montha, yeara, dayb, monthb, yearb] = getDate(range);
+        let startDate = "20" + yeara + "-" + montha + "-" + daya + "T" + startTime[Number(start) - 1] + ":00";
+        let endDate = "20" + yeara + "-" + montha + "-" + daya + "T" + endTime[Number(start) + Number(time) - 2] + ":00";
+        addEventToGoogle(
+            summary = name,
+            place = room,
+            desc = getDesc(code,group,credit,classCode,room,teacher),
+            start = startDate,
+            end = endDate,
+            rule = "RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=" + 
+            dayOfWeek[Number(day) - 2] + 
+            ";UNTIL=20" + yearb + monthb + dayb + "T235959Z",
+            colorId = color
+        );
+
+        i++;
+        while (lines[i].search(/^\s*[0-9]\s/) != -1) {
+            infos = lines[i].split("\t");
+            [day,start,time,room,teacher,range] = extractData(infos);
+            [daya, montha, yeara, dayb, monthb, yearb] = getDate(range);
+            startDate = "20" + yeara + "-" + montha + "-" + daya + "T" + startTime[Number(start) - 1] + ":00";
+            endDate = "20" + yeara + "-" + montha + "-" + daya + "T" + endTime[Number(start) + Number(time) - 2] + ":00";
+            addEventToGoogle(
+                summary = name,
+                place = room,
+                desc = getDesc(code,group,credit,classCode,room,teacher),
+                start = startDate,
+                end = endDate,
+                rule = "RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=" + 
+                dayOfWeek[Number(day) - 2] + 
+                ";UNTIL=20" + yearb + monthb + dayb + "T235959Z",
+                colorId = color
+            );
+
+            i++;
+        }
+    }
+    console.log("Finished");
+    alert("Events added to calendar successfully!");
+}
+
+/*async function addEvent() {
+    let input = document.getElementById("input").value;
+    let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
+
+    if (input.indexOf("THỜI KHÓA BIỂU DẠNG HỌC KỲ") == -1) {
+        alert("Invalid input format. Please check the input and try again.");
+        return;
+    }
+
+    if (!storedToken) {
+        login();
+        addEvent();
+        return;
+    }
+
+    let name = "SGU Calendar";
+    let match = input.match(/\s(Học kỳ [0-9]+)\s/);
+    if (match) {
+        name =  match[1].trim();
     }
 
     //Create new calendar
@@ -171,8 +255,7 @@ async function addEvent() {
         return;
     }
     
-    
-    i = input.search(/\s[0-9]{6}\s/);
+    let i = input.search(/\s[0-9]{6}\s/);
     if (i != -1) {
         input = input.slice(i);
     }
@@ -184,15 +267,9 @@ async function addEvent() {
         let credit = infos[3].trim();
         let classCode = infos[4].trim();
         let color = (Math.floor(Math.random() * 11) + 1).toString();
-        /*console.log("Mã MH: " + code);
-        console.log("Tên: " + name);
-        console.log("Nhóm: " + group);
-        console.log("Số tín: " + credit);
-        console.log("Lớp: " + classCode);*/
 
         let [day,start,time,room,teacher,range] = extractData(infos.slice(5));
-        let [daya, montha, yeara] = getDate(range);
-        let [dayb, monthb, yearb] = getDate(range.slice(10));
+        let [daya, montha, yeara, dayb, monthb, yearb] = getDate(range);
         let startDate = "20" + yeara + "-" + montha + "-" + daya + "T" + startTime[Number(start) - 1] + ":00";
         let endDate = "20" + yeara + "-" + montha + "-" + daya + "T" + endTime[Number(start) + Number(time) - 2] + ":00";
         addEventToGoogle(
@@ -208,13 +285,12 @@ async function addEvent() {
         );
 
         let j = input.indexOf(range);
-        input = input.slice(j + 21);
+        input = input.slice(j + range.length + 1);
         j = input.search(/\s[0-9]\s/);
         while (j >= 0 && j <= 3) {
             infos = input.split("\t");
             [day,start,time,room,teacher,range] = extractData(infos);
-            [daya, montha, yeara] = getDate(range);
-            [dayb, monthb, yearb] = getDate(range.slice(10));
+            [daya, montha, yeara, dayb, monthb, yearb] = getDate(range);
             startDate = "20" + yeara + "-" + montha + "-" + daya + "T" + startTime[Number(start) - 1] + ":00";
             endDate = "20" + yeara + "-" + montha + "-" + daya + "T" + endTime[Number(start) + Number(time) - 2] + ":00";
             addEventToGoogle(
@@ -230,12 +306,13 @@ async function addEvent() {
             );
 
             j = input.indexOf(range);
-            input = input.slice(j + 21);
+            input = input.slice(j + range.length + 1);
             j = input.search(/\s[0-9]\s/);
         }
         i = input.search(/\s[0-9]{6}\s/);
     }
     console.log("Finished");
-}
+    alert("Events added to calendar successfully!");
+}*/
 
 window.onload = getTokenFromURL;
