@@ -1,22 +1,11 @@
-let startTime = [
-    "07:00", "07:50", "09:00", "09:50", "10:40", 
-    "13:00", "13:50", "15:00", "15:50", "16:40", "17:40", "18:30", "19:20"
-]
-let endTime = [
-    "07:50", "08:40", "09:50", "10:40", "11:30", 
-    "13:50", "14:40", "15:50", "16:40", "17:30", "18:30", "19:20", "20:10"
-]
-let dayOfWeek = [
-    "MO", "TU", "WE", "TH", "FR", "SA", "SU"
-]
-
-const CLIENT_ID = "257937309503-8102k6ntknn262kme876mb0r9l5lafka.apps.googleusercontent.com";
-const REDIRECT_URI = "https://denbachieu.github.io/SGU-Calendar/";
-const SCOPE = "https://www.googleapis.com/auth/calendar.app.created";
-const AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=${SCOPE}`;
+let startTime = ["07:00", "07:50", "09:00", "09:50", "10:40", "13:00", "13:50", "15:00", "15:50", "16:40", "17:40", "18:30", "19:20"];
+let endTime = ["07:50", "08:40", "09:50", "10:40", "11:30","13:50", "14:40", "15:50", "16:40", "17:30", "18:30", "19:20", "20:10"];
+let dayOfWeek = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
 
 function login() {
-    window.location.href = AUTH_URL;
+    //Be a kind person, don't use this code to steal other people's token
+    //I don't have enough money for backend and other options are terrible for users
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=257937309503-8102k6ntknn262kme876mb0r9l5lafka.apps.googleusercontent.com&redirect_uri=https://denbachieu.github.io/SGU-Calendar/&response_type=token&scope=https://www.googleapis.com/auth/calendar.app.created`;
 }
 
 function getTokenFromURL() {
