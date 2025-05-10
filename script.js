@@ -105,7 +105,7 @@ function getDate(input) {
 
 function resetButton() {
     let button = document.getElementById("add-button");
-    button.textContent = "Thêm vào Google Calendar";
+    button.textContent = "Add to Google Calendar";
     button.disabled = false;
 }
 
@@ -118,7 +118,7 @@ async function addEvent(pointerEvent = null, logged = false) {
     let inputer = document.getElementById("input");
     let input = inputer.value;
     let button = document.getElementById("add-button");
-    button.textContent = "Đang thêm...";
+    button.textContent = "Adding...";
     button.disabled = true;
 
     let storedToken = localStorage.getItem("oauth_token");
