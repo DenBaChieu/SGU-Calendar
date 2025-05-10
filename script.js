@@ -109,6 +109,11 @@ function resetButton() {
     button.disabled = false;
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    const button = document.getElementById("add-button");
+    button.addEventListener("click", addEvent);
+});
+
 async function addEvent(logged = false) {
     let inputer = document.getElementById("input");
     let input = inputer.value;
