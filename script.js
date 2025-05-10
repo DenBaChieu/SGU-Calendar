@@ -74,9 +74,9 @@ async function addEventToGoogle(
     });
 
     if (response.ok) {
-        alert("Event added successfully!");
+        return true;
     } else {
-        alert("Failed to add event. Please check authentication.");
+        return false;
     }
 }
 
@@ -107,14 +107,17 @@ function getDate(input) {
 
 async function addEvent(logged = false) {
     let input = document.getElementById("input").value;
-    let storedToken = localStorage.getItem("oauth_token");  // Retrieve token
+    let button = document.getElementById("add-button");
+    button.textContent = "Adding...";
+    button.disabled = true;
 
-    if (!storedToken) {
+    if (!logged) {
         localStorage.setItem("input", input);
         login();
         return;
     }
-    else if (logged) {
+    else if (input != null || input == "") {
+        //Get the saved input if there is no input in the text area
         input = localStorage.getItem("input");
     }
 
@@ -145,10 +148,8 @@ async function addEvent(logged = false) {
     const data = await response.json();
 
     if (response.ok) {
-        console.log("Calendar created successfully!", data);
         localStorage.setItem("calendarId", data.id);
     } else {
-        console.error("Error creating calendar:", data);
         alert("Failed to create calendar. Check authentication or permissions.");
         return;
     }
@@ -162,6 +163,7 @@ async function addEvent(logged = false) {
         }
     }
 
+    let success = true;
     while (i < lines.length && lines[i].search(/^\s*[0-9]{6}\s/) != -1) {
         let infos = lines[i].split("\t");
         let code = infos[0].trim();
@@ -175,7 +177,7 @@ async function addEvent(logged = false) {
         let [daya, montha, yeara, dayb, monthb, yearb] = getDate(range);
         let startDate = "20" + yeara + "-" + montha + "-" + daya + "T" + startTime[Number(start) - 1] + ":00";
         let endDate = "20" + yeara + "-" + montha + "-" + daya + "T" + endTime[Number(start) + Number(time) - 2] + ":00";
-        addEventToGoogle(
+        let result = addEventToGoogle(
             summary = name,
             place = room,
             desc = getDesc(code,group,credit,classCode,room,teacher),
@@ -186,6 +188,9 @@ async function addEvent(logged = false) {
             ";UNTIL=20" + yearb + monthb + dayb + "T235959Z",
             colorId = color
         );
+        if (!result) {
+            success = false;
+        }
 
         i++;
         while (lines[i].search(/^\s*[0-9]\s/) != -1) {
@@ -194,7 +199,7 @@ async function addEvent(logged = false) {
             [daya, montha, yeara, dayb, monthb, yearb] = getDate(range);
             startDate = "20" + yeara + "-" + montha + "-" + daya + "T" + startTime[Number(start) - 1] + ":00";
             endDate = "20" + yeara + "-" + montha + "-" + daya + "T" + endTime[Number(start) + Number(time) - 2] + ":00";
-            addEventToGoogle(
+            let result = addEventToGoogle(
                 summary = name,
                 place = room,
                 desc = getDesc(code,group,credit,classCode,room,teacher),
@@ -205,12 +210,22 @@ async function addEvent(logged = false) {
                 ";UNTIL=20" + yearb + monthb + dayb + "T235959Z",
                 colorId = color
             );
+            if (!result) {
+                success = false;
+            }
 
             i++;
         }
     }
+    button.textContent = "Add to Google Calendar";
+    button.disabled = false;
     console.log("Finished");
-    alert("Events added to calendar successfully!");
+    if (success) {
+        alert("Events added to calendar successfully!");
+    }
+    else {
+        alert("Events failed to be added to calendar!");
+    }
 }
 
 /*async function addEvent() {
