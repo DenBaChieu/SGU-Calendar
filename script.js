@@ -105,6 +105,12 @@ function getDate(input) {
     }
 }
 
+function resetButton() {
+    let button = document.getElementById("add-button");
+    button.textContent = "Add to Google Calendar";
+    button.disabled = false;
+}
+
 async function addEvent(logged = false) {
     let inputer = document.getElementById("input");
     let input = inputer.value;
@@ -117,6 +123,7 @@ async function addEvent(logged = false) {
     if (!logged) {
         localStorage.setItem("input", input);
         login();
+        resetButton();
         return;
     }
     else if (input != null || input == "") {
@@ -127,6 +134,7 @@ async function addEvent(logged = false) {
 
     if (input == null || input.indexOf("THỜI KHÓA BIỂU DẠNG HỌC KỲ") == -1) {
         alert("Invalid input format. Please check the input and try again.");
+        resetButton();
         return;
     }
 
@@ -155,6 +163,7 @@ async function addEvent(logged = false) {
         localStorage.setItem("calendarId", data.id);
     } else {
         alert("Failed to create calendar. Check authentication or permissions.");
+        resetButton();
         return;
     }
 
@@ -221,8 +230,7 @@ async function addEvent(logged = false) {
             i++;
         }
     }
-    button.textContent = "Add to Google Calendar";
-    button.disabled = false;
+    resetButton();
     localStorage.setItem("input", "");
     if (success) {
         alert("Events added to calendar successfully!");
