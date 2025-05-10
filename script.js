@@ -1,4 +1,3 @@
-let webLink = "https://sgu-calendar.onrender.com";
 let startTime = [
     "07:00", "07:50", "09:00", "09:50", "10:40", 
     "13:00", "13:50", "15:00", "15:50", "16:40", "17:40", "18:30", "19:20"
@@ -114,11 +113,7 @@ async function addEvent() {
         return;
     }
 
-    if (!storedToken) {
-        login();
-        addEvent();
-        return;
-    }
+    login();
 
     let name = "SGU Calendar";
     let match = input.match(/\s(Học kỳ [0-9]+)\s/);
